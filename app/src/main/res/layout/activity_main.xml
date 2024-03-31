@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <com.louisgeek.as_2023_1_1.RegularDrawLayout
+        android:id="@+id/rdl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--
+            <com.louisgeek.as_2023_1_1.PointView
+                    android:layout_marginStart="200dp"
+                    android:layout_marginTop="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.louisgeek.as_2023_1_1.LineView
+                    android:layout_marginStart="200dp"
+                    android:layout_marginTop="200dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+        -->
+
+        <!--  <com.louisgeek.as_2023_1_1.BoxView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />-->
+
+    </com.louisgeek.as_2023_1_1.RegularDrawLayout>
+
+    <!--    <com.louisgeek.as_2023_1_1.BoxView
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />-->
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:padding="20dp"
+        android:background="#B53131"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
