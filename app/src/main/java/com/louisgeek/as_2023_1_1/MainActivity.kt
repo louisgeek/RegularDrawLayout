@@ -10,12 +10,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val tv: TextView = findViewById(R.id.tv)
-        val rdl: RegularDrawLayout = findViewById(R.id.rdl)
-        tv.setOnClickListener {
-
-            val boxView = BoxView(this)
-
-            rdl.addBoxView(boxView)
-        }
+//        val rdl: RegularDrawLayout = findViewById(R.id.rdl)
+//        tv.setOnClickListener {
+//
+//            val boxView = BoxView(this)
+//
+//            rdl.addBoxView(boxView)
+//        }
     }
 }

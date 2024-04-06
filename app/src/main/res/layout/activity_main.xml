@@ -7,34 +7,34 @@
     tools:context=".MainActivity">
 
 
-    <com.louisgeek.as_2023_1_1.RegularDrawLayout
-        android:id="@+id/rdl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <!--    <com.louisgeek.as_2023_1_1.RegularDrawLayout
+            android:id="@+id/rdl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">-->
 
-        <!--
-            <com.louisgeek.as_2023_1_1.PointView
-                    android:layout_marginStart="200dp"
-                    android:layout_marginTop="100dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+    <!--
+        <com.louisgeek.as_2023_1_1.PointView
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-                <com.louisgeek.as_2023_1_1.LineView
-                    android:layout_marginStart="200dp"
-                    android:layout_marginTop="200dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-        -->
+            <com.louisgeek.as_2023_1_1.LineView
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+    -->
 
-        <!--  <com.louisgeek.as_2023_1_1.BoxView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />-->
+    <!--  <com.louisgeek.as_2023_1_1.BoxView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />-->
 
-    </com.louisgeek.as_2023_1_1.RegularDrawLayout>
+    <!--    </com.louisgeek.as_2023_1_1.RegularDrawLayout>-->
 
     <!--    <com.louisgeek.as_2023_1_1.BoxView
             app:layout_constraintBottom_toBottomOf="parent"
@@ -43,13 +43,22 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />-->
+
+    <com.louisgeek.as_2023_1_1.BoxView0301
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:padding="20dp"
         android:background="#B53131"
+        android:padding="20dp"
+        android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
