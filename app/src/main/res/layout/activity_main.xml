@@ -44,13 +44,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />-->
 
-    <com.louisgeek.as_2023_1_1.BoxView0301
+
+    <com.louisgeek.as_2023_1_1.LineView0302
         android:layout_width="250dp"
         android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:background="@color/black"
+        android:layout_height="1dp" />
 
     <TextView
         android:id="@+id/tv"

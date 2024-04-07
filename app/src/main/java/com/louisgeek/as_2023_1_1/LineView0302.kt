@@ -13,10 +13,11 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import kotlin.math.abs
+import kotlin.math.min
 
-class LineView0301 : View {
+class LineView0302 : View {
     companion object {
-        private const val TAG = "LineView0301"
+        private const val TAG = "LineView0302"
     }
 
     constructor(context: Context?) : super(context) {
@@ -70,11 +71,12 @@ class LineView0301 : View {
     private lateinit var paintLineDot: Paint //画线的两个端点
     private var lineDotStart = PointF() //线的起点坐标
     private var lineDotEnd = PointF() //线的终点坐标
-    private var LINE_WIDTH = 8 //线的宽度
+    private var LINE_WIDTH = 2 //线的宽度
     private var LINE_DOT_WID = 80 //线的宽度
 
+
     //
-    private var lineLengthMin = 0 //线的最小长度
+    private var lineLengthMin = 100 //线的最小长度
     private var lineDirectLR_Reverse = false
     private var lineDirectTB_Reverse = false
 
@@ -101,20 +103,27 @@ class LineView0301 : View {
         paintLineDot.strokeCap = Paint.Cap.ROUND
 
 
+        setPaddingRelative(50, 50, 50, 50)
 
     }
 
 
     private fun refreshSize(wid: Float, hei: Float) {
         //设定可触摸区域
-        touchDisWid = 1.0F / 4 * wid
-        touchDisHei = 1.0F / 4 * hei
-
+//        touchDisWid = 1.0F / 4 * wid
+//        touchDisHei = 1.0F / 4 * hei
+        touchDisWid = 2.0F * LINE_DOT_WID
+        touchDisHei = 2.0F * LINE_DOT_WID
+        Log.e(TAG, "refreshSize: wid=$wid hei=$hei")
         //设定线的启动和终点---以view为基准
-        val viewPointLeftTop = PointF(0F + LINE_DOT_WID / 2, 0F + LINE_DOT_WID / 2)
-        val viewPointTopRight = PointF(wid - LINE_DOT_WID / 2, 0F + LINE_DOT_WID / 2)
-        val viewPointRightBottom = PointF(wid - LINE_DOT_WID / 2, hei - LINE_DOT_WID / 2)
-        val viewPointBottomLeft = PointF(0F + LINE_DOT_WID / 2, hei - LINE_DOT_WID / 2)
+        val viewPointLeftTop =
+            PointF(0F + LINE_DOT_WID / 2 + paddingStart, 0F + LINE_DOT_WID / 2 + paddingTop)
+        val viewPointTopRight =
+            PointF(wid - LINE_DOT_WID / 2 - paddingEnd, 0F + LINE_DOT_WID / 2 + paddingTop)
+        val viewPointRightBottom =
+            PointF(wid - LINE_DOT_WID / 2 - paddingEnd, hei - LINE_DOT_WID / 2 - paddingBottom)
+        val viewPointBottomLeft =
+            PointF(0F + LINE_DOT_WID / 2 + paddingStart, hei - LINE_DOT_WID / 2 - paddingBottom)
         //
         if (!lineDirectLR_Reverse && !lineDirectTB_Reverse) {
             lineDotStart.set(viewPointLeftTop)
@@ -129,6 +138,20 @@ class LineView0301 : View {
             lineDotStart.set(viewPointBottomLeft)
             lineDotEnd.set(viewPointTopRight)
         }
+
+//        if (!lineDirectLR_Reverse && !lineDirectTB_Reverse) {
+//            lineDotStart.set(viewPointLeftTop.x+LINE_WIDTH/2,viewPointLeftTop.y+LINE_WIDTH/2)
+//            lineDotEnd.set(viewPointRightBottom.x-LINE_WIDTH/2,viewPointRightBottom.y-LINE_WIDTH/2)
+//        } else if (lineDirectLR_Reverse && !lineDirectTB_Reverse) {
+//            lineDotStart.set(viewPointTopRight.x-LINE_WIDTH/2,viewPointTopRight.y+LINE_WIDTH/2)
+//            lineDotEnd.set(viewPointBottomLeft.x+LINE_WIDTH/2,viewPointBottomLeft.y-LINE_WIDTH/2)
+//        } else if (lineDirectLR_Reverse && lineDirectTB_Reverse) {
+//            lineDotStart.set(viewPointRightBottom.x-LINE_WIDTH/2,viewPointRightBottom.y-LINE_WIDTH/2)
+//            lineDotEnd.set(viewPointLeftTop.x+LINE_WIDTH/2,viewPointLeftTop.y+LINE_WIDTH/2)
+//        } else if (!lineDirectLR_Reverse && lineDirectTB_Reverse) {
+//            lineDotStart.set(viewPointBottomLeft.x+LINE_WIDTH/2,viewPointBottomLeft.y-LINE_WIDTH/2)
+//            lineDotEnd.set(viewPointTopRight.x-LINE_WIDTH/2,viewPointTopRight.y+LINE_WIDTH/2)
+//        }
 
     }
 
@@ -150,16 +173,16 @@ class LineView0301 : View {
         super.onDraw(canvas)
         canvas.drawColor(Color.YELLOW)
 
-//        paintTest.color = Color.CYAN
-//        canvas.drawRect(touchRectLeftTop, paintTest)
-//        paintTest.color = Color.GRAY
-//        canvas.drawRect(touchRectTopRight, paintTest)
-//        paintTest.color = Color.BLACK
-//        canvas.drawRect(touchRectRightBottom, paintTest)
-//        paintTest.color = Color.DKGRAY
-//        canvas.drawRect(touchRectBottomLeft, paintTest)
-//        paintTest.color = Color.RED
-//        canvas.drawRect(touchRectCenter, paintTest)
+        paintTest.color = Color.CYAN
+        canvas.drawRect(touchRectLeftTop, paintTest)
+        paintTest.color = Color.GRAY
+        canvas.drawRect(touchRectTopRight, paintTest)
+        paintTest.color = Color.BLACK
+        canvas.drawRect(touchRectRightBottom, paintTest)
+        paintTest.color = Color.DKGRAY
+        canvas.drawRect(touchRectBottomLeft, paintTest)
+        paintTest.color = Color.RED
+        canvas.drawRect(touchRectCenter, paintTest)
 
         paintLineDot.color = Color.BLUE
         canvas.drawPoint(
@@ -174,7 +197,6 @@ class LineView0301 : View {
             paintLineDot
         )
 
-
         canvas.drawLine(
             lineDotStart.x,
             lineDotStart.y,
@@ -183,6 +205,37 @@ class LineView0301 : View {
             paintLine
         )
 
+        Log.e(TAG, "onDraw: lineDotStart.y=${lineDotStart.y}")
+        paintTest.color = Color.BLACK
+        canvas.drawLine(
+            0F,
+            lineDotStart.y - LINE_DOT_WID / 2,
+            this.width.toFloat(),
+            lineDotStart.y - LINE_DOT_WID / 2,
+            paintTest
+        )
+        canvas.drawLine(
+            0F,
+            lineDotStart.y + LINE_DOT_WID / 2,
+            this.width.toFloat(),
+            lineDotStart.y + LINE_DOT_WID / 2,
+            paintTest
+        )
+        paintTest.color = Color.CYAN
+        canvas.drawLine(
+            0F,
+            lineDotEnd.y - LINE_DOT_WID / 2,
+            this.width.toFloat(),
+            lineDotEnd.y - LINE_DOT_WID / 2,
+            paintTest
+        )
+        canvas.drawLine(
+            0F,
+            lineDotEnd.y + LINE_DOT_WID / 2,
+            this.width.toFloat(),
+            lineDotEnd.y + LINE_DOT_WID / 2,
+            paintTest
+        )
     }
 
     private var downPoint = Point()
@@ -277,13 +330,15 @@ class LineView0301 : View {
     private fun changeLeft(disX: Int) {
         Log.e(TAG, "changeLeft: disX=$disX")
         newViewRect.left = originViewRect.left + disX
-        if (newViewRect.left > originViewRect.right - LINE_DOT_WID) {
-            newViewRect.left = originViewRect.right - LINE_DOT_WID
-            newViewRect.right = originViewRect.left + disX + LINE_DOT_WID
+        //
+        val paddingHor = paddingStart + paddingEnd
+        if (newViewRect.left > originViewRect.right - LINE_DOT_WID - paddingHor) {
+            newViewRect.left = originViewRect.right - LINE_DOT_WID - paddingHor
+            newViewRect.right = originViewRect.left + disX + LINE_DOT_WID + paddingHor
             lineDirectLR_Reverse = !downLineDirectLR_Reverse //!按下
         }
         if (lineDirectLR_Reverse != downLineDirectLR_Reverse) {
-            if (newViewRect.left < originViewRect.right - LINE_DOT_WID) {
+            if (newViewRect.left < originViewRect.right - LINE_DOT_WID - paddingHor) {
                 lineDirectLR_Reverse = downLineDirectLR_Reverse //按下
             }
         }
@@ -296,14 +351,16 @@ class LineView0301 : View {
 
     private fun changeTop(disY: Int) {
         newViewRect.top = originViewRect.top + disY
-        if (newViewRect.top > originViewRect.bottom - LINE_DOT_WID) {
+        //
+        val paddingVer = paddingTop + paddingBottom
+        if (newViewRect.top > originViewRect.bottom - LINE_DOT_WID - paddingVer) {
             //上边到了下边的下面--交换两边
-            newViewRect.top = originViewRect.bottom - LINE_DOT_WID
-            newViewRect.bottom = originViewRect.top + disY + LINE_DOT_WID
+            newViewRect.top = originViewRect.bottom - LINE_DOT_WID - paddingVer
+            newViewRect.bottom = originViewRect.top + disY + LINE_DOT_WID + paddingVer
             lineDirectTB_Reverse = !downLineDirectTB_Reverse //!按下
         }
         if (lineDirectTB_Reverse != downLineDirectTB_Reverse) {
-            if (newViewRect.top < originViewRect.bottom - LINE_DOT_WID) {
+            if (newViewRect.top < originViewRect.bottom - LINE_DOT_WID - paddingVer) {
                 lineDirectTB_Reverse = downLineDirectTB_Reverse //按下
             }
         }
@@ -319,13 +376,14 @@ class LineView0301 : View {
         Log.e(TAG, "changeRight: disX=$disX")
         newViewRect.right = originViewRect.right + disX
         //
-        if (newViewRect.right < originViewRect.left + LINE_DOT_WID) {
-            newViewRect.right = originViewRect.left + LINE_DOT_WID
-            newViewRect.left = originViewRect.right + disX - LINE_DOT_WID
+        val paddingHor = paddingStart + paddingEnd
+        if (newViewRect.right < originViewRect.left + LINE_DOT_WID + paddingHor) {
+            newViewRect.right = originViewRect.left + LINE_DOT_WID + paddingHor
+            newViewRect.left = originViewRect.right + disX - LINE_DOT_WID - paddingHor
             lineDirectLR_Reverse = !downLineDirectLR_Reverse //!按下
         }
         if (lineDirectLR_Reverse != downLineDirectLR_Reverse) {
-            if (newViewRect.right > originViewRect.left + LINE_DOT_WID) {
+            if (newViewRect.right > originViewRect.left + LINE_DOT_WID + paddingHor) {
                 lineDirectLR_Reverse = downLineDirectLR_Reverse //按下
             }
         }
@@ -338,13 +396,15 @@ class LineView0301 : View {
     private fun changeBottom(disY: Int) {
         Log.e(TAG, "changeBottom: disY=$disY")
         newViewRect.bottom = originViewRect.bottom + disY
-        if (newViewRect.bottom < originViewRect.top + LINE_DOT_WID) {
-            newViewRect.bottom = originViewRect.top + LINE_DOT_WID
-            newViewRect.top = originViewRect.bottom + disY - LINE_DOT_WID
+        //
+        val paddingVer = paddingTop + paddingBottom
+        if (newViewRect.bottom < originViewRect.top + LINE_DOT_WID + paddingVer) {
+            newViewRect.bottom = originViewRect.top + LINE_DOT_WID + paddingVer
+            newViewRect.top = originViewRect.bottom + disY - LINE_DOT_WID - paddingVer
             lineDirectTB_Reverse = !downLineDirectTB_Reverse //!按下
         }
         if (lineDirectTB_Reverse != downLineDirectTB_Reverse) {
-            if (newViewRect.bottom > originViewRect.top + LINE_DOT_WID) {
+            if (newViewRect.bottom > originViewRect.top + LINE_DOT_WID + paddingVer) {
                 lineDirectTB_Reverse = downLineDirectTB_Reverse //按下
             }
         }
@@ -393,12 +453,16 @@ class LineView0301 : View {
             0 + touchDisWid,
             0 + touchDisHei
         )
+        touchRectLeftTop.outset(paddingStart, paddingTop)
+
         touchRectTopRight.set(
             wid - touchDisWid,
             0 - touchDisHei,
             wid + touchDisWid,
             0 + touchDisHei
         )
+        touchRectTopRight.outset(paddingTop, paddingEnd)
+
         touchRectRightBottom.set(
             wid - touchDisWid,
             hei - touchDisHei,
@@ -417,6 +481,38 @@ class LineView0301 : View {
             wid - touchDisWid,
             hei - touchDisHei
         )
+
+//        touchRectLeftTop.set(
+//            0 - touchDisWid,
+//            0 - touchDisHei,
+//            0 + touchDisWid,
+//            0 + touchDisHei
+//        )
+//        touchRectTopRight.set(
+//            wid - touchDisWid,
+//            0 - touchDisHei,
+//            wid + touchDisWid,
+//            0 + touchDisHei
+//        )
+//        touchRectRightBottom.set(
+//            wid - touchDisWid,
+//            hei - touchDisHei,
+//            wid + touchDisWid,
+//            hei + touchDisHei
+//        )
+//        touchRectBottomLeft.set(
+//            0 - touchDisWid,
+//            hei - touchDisHei,
+//            0 + touchDisWid,
+//            hei + touchDisHei
+//        )
+//        touchRectCenter.set(
+//            0 + touchDisWid,
+//            0 + touchDisHei,
+//            wid - touchDisWid,
+//            hei - touchDisHei
+//        )
+
         if (touchRectLeftTop.contains(eventX, eventY)) {
             touchArea = TOUCH_LEFT_TOP
             Log.e(TAG, "dealDown: TOUCH_LEFT_TOP")
