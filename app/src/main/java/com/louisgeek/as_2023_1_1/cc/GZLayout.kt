@@ -11,6 +11,7 @@ import android.util.Size
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.louisgeek.as_2023_1_1.BoxView0301
@@ -102,20 +103,80 @@ class GZLayout : FrameLayout {
     }
 
 
-    private var direct_top = 0
-    private var direct_bottom = 1
-    private var direct_inside = 2
-
-    private var direct = direct_top
-    private fun setDirect(direct: Int) {
-        this.direct = direct
-    }
-
-
+    private var dotViews: LinkedHashMap<Int, DotView0302> = linkedMapOf()
     private var lineViews: LinkedHashMap<Int, LineView0303> = linkedMapOf()
     private var boxViews: LinkedHashMap<Int, BoxView0301> = linkedMapOf()
 
-    //0,0   200,200
+    fun addDotView(dotPoint: Point) {
+//        val minX = min(lineDotStart.x, lineDotEnd.x)
+//        val minY = min(lineDotStart.y, lineDotEnd.y)
+        //
+        val dotView = DotView0302(context)
+        dotView.id = 12
+        val mlp = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        mlp.marginStart = dotPoint.x
+        mlp.topMargin = dotPoint.y
+        this.addView(dotView, mlp)
+        //
+        dotViews[dotView.id] = dotView
+        //
+//        val operateView = ImageView(context)
+//        operateView.setImageResource(R.drawable.test_delete)
+////        operateView.setPaddingRelative(5, 5, 5, 5)
+////        operateView.visibility = View.INVISIBLE
+//        operateView.setOnClickListener {
+//            Toast.makeText(context, "点击del", Toast.LENGTH_SHORT).show()
+//        }
+//        val otv_mlp = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//
+////        otv_mlp.marginStart = lineDotStart.x + lineRegionSize.width / 2
+////        otv_mlp.topMargin = lineDotStart.y -
+//        this.addView(operateView, otv_mlp)
+        //
+        dotView.setOnMoveOrSizeChangeListener { dotRegionRect, dotPoint, bmpDotWid ->
+            Log.e("TAG", "addDotView: dotRegionRect=$dotRegionRect")
+//            Log.e("TAG", "addLineView: startEndPoints=$startEndPoints")
+            val lineParentView = dotView.parent as View
+            val parentLeft = lineParentView.left
+            val parentTop = lineParentView.top
+            val parentRight = lineParentView.right
+            val parentBottom = lineParentView.bottom
+
+            val dotRegionWid = dotRegionRect.width()
+            val dotRegionHei = dotRegionRect.height()
+//            val left = dotView.left //抖动
+//            val top = dotView.top //抖动
+            val dotRegionLeft = dotRegionRect.left
+            val dotRegionTop = dotRegionRect.top
+            val dotRegionRight = dotRegionRect.right
+            val dotRegionBottom = dotRegionRect.bottom
+
+//            Log.e("TAG", "addDotView: parentRight=$parentRight dotRegionRight=$dotRegionRight", )
+            var otvLeft = 0
+            var otvRight = 0
+            val directReverse = dotView.getDirectReverse()
+            if (directReverse) {
+                //线、叉在左侧
+            } else {
+                //线、叉在右侧
+                var newRight = dotPoint.x.toInt() - bmpDotWid + dotRegionWid
+//                Log.e("TAG", "addDotView: newRight=$newRight")
+                if (parentRight - newRight == 0) {
+//                    dotView.setDirectReverse(!directReverse)
+//                    //
+//                    otvLeft = dotPoint.x.toInt() + bmpDotWid - dotRegionWid
+//                    otvRight = otvLeft + dotRegionWid
+//                    dotView.layout(otvLeft, dotRegionTop, otvRight, dotRegionBottom)
+                } else {
+//                    dotView.setDirect(DotView0302.direct_right)
+//                dotView.layout(otvLeft, otvTop, otvRight, otvBottom)
+                }
+            }
+
+
+        }
+    }
+
     fun addLineView(lineDotStart: Point, lineDotEnd: Point, lineRegionSize: Size) {
         val minX = min(lineDotStart.x, lineDotEnd.x)
         val minY = min(lineDotStart.y, lineDotEnd.y)
@@ -381,6 +442,13 @@ class GZLayout : FrameLayout {
 //            operateTextView.top = otvTop
 //            operateTextView.right = otvRight
 //            operateTextView.bottom = otvBottom
+    }
+
+    fun getDotList() {
+        dotViews.forEach { vId, dotView ->
+            val dotPoint = dotView.getDotPoint()
+            Log.e("TAG", "dotPoint: $dotPoint")
+        }
     }
 
     fun getPoList() {

@@ -21,6 +21,10 @@ class MainActivity : AppCompatActivity() {
         val gzLayout: GZLayout = findViewById(R.id.gzLayout)
         tv.setOnClickListener {
             gzLayout.removeAllViews()
+
+            val dotPoint = Point(200, 200)
+            gzLayout.addDotView(dotPoint)
+
             val lineDotStart = Point(0, 0)
             val lineDotEnd = Point(300, 300)
 
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             val lineRegionHei = abs(lineDotEnd.y - lineDotStart.y)
             val lineRegionSize = Size(lineRegionWid, lineRegionHei)
 
-            gzLayout.addLineView(lineDotStart, lineDotEnd, lineRegionSize)
+//            gzLayout.addLineView(lineDotStart, lineDotEnd, lineRegionSize)
 
 //            val boxDotStart = Point(0, 0)
 //            val boxDotEnd = Point(200, 200)
@@ -50,8 +54,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         tvEnd.setOnClickListener {
-            gzLayout.getPoList()
-            gzLayout.getBoxPointsList()
+            gzLayout.getDotList()
+//            gzLayout.getPoList()
+//            gzLayout.getBoxPointsList()
         }
 
     }

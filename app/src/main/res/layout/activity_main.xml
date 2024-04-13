@@ -45,13 +45,13 @@
             android:layout_height="wrap_content" />-->
 
 
-    <!-- <com.louisgeek.as_2023_1_1.LineView0303
-         android:layout_width="200dp"
-         android:layout_height="200dp"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <com.louisgeek.as_2023_1_1.DotView0301-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <View
         android:layout_width="match_parent"
