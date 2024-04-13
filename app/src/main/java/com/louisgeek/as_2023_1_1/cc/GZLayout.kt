@@ -113,13 +113,20 @@ class GZLayout : FrameLayout {
         //
         val dotView = DotView0302(context)
         dotView.id = 12
+        dotView.visibility = View.INVISIBLE
         val mlp = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        mlp.marginStart = dotPoint.x
-        mlp.topMargin = dotPoint.y
         this.addView(dotView, mlp)
         //
         dotViews[dotView.id] = dotView
         //
+        dotView.post {
+            val bmpDotWid = dotView.getBmpDotWid()
+            val marginLayoutParams = dotView.layoutParams as MarginLayoutParams
+            marginLayoutParams.marginStart = dotPoint.x - bmpDotWid / 2
+            marginLayoutParams.topMargin = dotPoint.y - dotView.height / 2
+            dotView.layoutParams = marginLayoutParams
+            dotView.visibility = View.VISIBLE
+        }
 //        val operateView = ImageView(context)
 //        operateView.setImageResource(R.drawable.test_delete)
 ////        operateView.setPaddingRelative(5, 5, 5, 5)
@@ -133,48 +140,48 @@ class GZLayout : FrameLayout {
 ////        otv_mlp.topMargin = lineDotStart.y -
 //        this.addView(operateView, otv_mlp)
         //
-        dotView.setOnMoveOrSizeChangeListener { dotRegionRect, dotPoint, bmpDotWid ->
-            Log.e("TAG", "addDotView: dotRegionRect=$dotRegionRect")
-//            Log.e("TAG", "addLineView: startEndPoints=$startEndPoints")
-            val lineParentView = dotView.parent as View
-            val parentLeft = lineParentView.left
-            val parentTop = lineParentView.top
-            val parentRight = lineParentView.right
-            val parentBottom = lineParentView.bottom
-
-            val dotRegionWid = dotRegionRect.width()
-            val dotRegionHei = dotRegionRect.height()
-//            val left = dotView.left //抖动
-//            val top = dotView.top //抖动
-            val dotRegionLeft = dotRegionRect.left
-            val dotRegionTop = dotRegionRect.top
-            val dotRegionRight = dotRegionRect.right
-            val dotRegionBottom = dotRegionRect.bottom
-
-//            Log.e("TAG", "addDotView: parentRight=$parentRight dotRegionRight=$dotRegionRight", )
-            var otvLeft = 0
-            var otvRight = 0
-            val directReverse = dotView.getDirectReverse()
-            if (directReverse) {
-                //线、叉在左侧
-            } else {
-                //线、叉在右侧
-                var newRight = dotPoint.x.toInt() - bmpDotWid + dotRegionWid
-//                Log.e("TAG", "addDotView: newRight=$newRight")
-                if (parentRight - newRight == 0) {
-//                    dotView.setDirectReverse(!directReverse)
-//                    //
-//                    otvLeft = dotPoint.x.toInt() + bmpDotWid - dotRegionWid
-//                    otvRight = otvLeft + dotRegionWid
-//                    dotView.layout(otvLeft, dotRegionTop, otvRight, dotRegionBottom)
-                } else {
-//                    dotView.setDirect(DotView0302.direct_right)
-//                dotView.layout(otvLeft, otvTop, otvRight, otvBottom)
-                }
-            }
-
-
-        }
+//        dotView.setOnMoveOrSizeChangeListener { dotRegionRect, dotPoint, bmpDotWid ->
+//            Log.e("TAG", "addDotView: dotRegionRect=$dotRegionRect")
+////            Log.e("TAG", "addLineView: startEndPoints=$startEndPoints")
+//            val lineParentView = dotView.parent as View
+//            val parentLeft = lineParentView.left
+//            val parentTop = lineParentView.top
+//            val parentRight = lineParentView.right
+//            val parentBottom = lineParentView.bottom
+//
+//            val dotRegionWid = dotRegionRect.width()
+//            val dotRegionHei = dotRegionRect.height()
+////            val left = dotView.left //抖动
+////            val top = dotView.top //抖动
+//            val dotRegionLeft = dotRegionRect.left
+//            val dotRegionTop = dotRegionRect.top
+//            val dotRegionRight = dotRegionRect.right
+//            val dotRegionBottom = dotRegionRect.bottom
+//
+////            Log.e("TAG", "addDotView: parentRight=$parentRight dotRegionRight=$dotRegionRight", )
+//            var otvLeft = 0
+//            var otvRight = 0
+//            val directReverse = dotView.getDirectReverse()
+//            if (directReverse) {
+//                //线、叉在左侧
+//            } else {
+//                //线、叉在右侧
+//                var newRight = dotPoint.x.toInt() - bmpDotWid + dotRegionWid
+////                Log.e("TAG", "addDotView: newRight=$newRight")
+//                if (parentRight - newRight == 0) {
+////                    dotView.setDirectReverse(!directReverse)
+////                    //
+////                    otvLeft = dotPoint.x.toInt() + bmpDotWid - dotRegionWid
+////                    otvRight = otvLeft + dotRegionWid
+////                    dotView.layout(otvLeft, dotRegionTop, otvRight, dotRegionBottom)
+//                } else {
+////                    dotView.setDirect(DotView0302.direct_right)
+////                dotView.layout(otvLeft, otvTop, otvRight, otvBottom)
+//                }
+//            }
+//
+//
+//        }
     }
 
     fun addLineView(lineDotStart: Point, lineDotEnd: Point, lineRegionSize: Size) {

@@ -13,6 +13,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.marginEnd
+import androidx.core.view.marginStart
 import com.louisgeek.as_2023_1_1.BoxView0301
 import com.louisgeek.as_2023_1_1.R
 import kotlin.math.abs
@@ -286,7 +288,12 @@ class DotView0302 : View {
         return directReverse
     }
 
+    fun getBmpDotWid(): Int {
+        return bmpDot.width
+    }
     fun getDotPoint(): Point {
+        Log.e(TAG, "getDotPoint: marginStart=${this.marginStart} marginEnd=${this.marginEnd}")
+        Log.e(TAG, "getDotPoint: left=${this.left} top=${this.top}")
         val bmpDotPoint = Point()
         if (directReverse) {
             //线、叉在左侧
