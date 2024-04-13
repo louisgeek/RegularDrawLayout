@@ -69,7 +69,7 @@ class BoxView0301 : View {
     private lateinit var paintBox: Paint //画框
     private lateinit var paintBoxDot: Paint //画框的四个端点
     private var boxRect = RectF()
-    private var LINE_WIDTH = 80 //线的宽度
+    private var LINE_WIDTH = 8 //线的宽度
 
 
     //
@@ -130,22 +130,25 @@ class BoxView0301 : View {
         super.onSizeChanged(w, h, oldw, oldh)
 
         refreshSize(w.toFloat(), h.toFloat())
+        val xxx = Rect(this.left, this.top, this.right, this.bottom)
+        Log.e(TAG, "onSizeChanged: zfq xxx=$xxx")
+        onMoveOrSizeChangeListener?.invoke(xxx)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawColor(Color.YELLOW)
 
-        paintTest.color = Color.CYAN
-        canvas.drawRect(touchRectLeftTop, paintTest)
-        paintTest.color = Color.GRAY
-        canvas.drawRect(touchRectTopRight, paintTest)
-        paintTest.color = Color.BLACK
-        canvas.drawRect(touchRectRightBottom, paintTest)
-        paintTest.color = Color.DKGRAY
-        canvas.drawRect(touchRectBottomLeft, paintTest)
-        paintTest.color = Color.RED
-        canvas.drawRect(touchRectCenter, paintTest)
+//        paintTest.color = Color.CYAN
+//        canvas.drawRect(touchRectLeftTop, paintTest)
+//        paintTest.color = Color.GRAY
+//        canvas.drawRect(touchRectTopRight, paintTest)
+//        paintTest.color = Color.BLACK
+//        canvas.drawRect(touchRectRightBottom, paintTest)
+//        paintTest.color = Color.DKGRAY
+//        canvas.drawRect(touchRectBottomLeft, paintTest)
+//        paintTest.color = Color.RED
+//        canvas.drawRect(touchRectCenter, paintTest)
 
         canvas.drawRect(boxRect, paintBox)
 
@@ -414,11 +417,16 @@ class BoxView0301 : View {
         }
     }
 
-//    fun getLineDirectLR_RRRR(): Boolean {
-//        return lineDirectLR_Reverse
-//    }
-//
-//    fun getLineDirectTB_RRRR(): Boolean {
-//        return lineDirectTB_Reverse
-//    }
+    fun getStartEndPoints(): Pair<Point, Point> {
+        val start = Point()
+        val end = Point()
+        start.set(this.left, this.top)
+        end.set(this.right, this.bottom)
+        return Pair(start, end)
+    }
+
+    private var onMoveOrSizeChangeListener: ((boxRegionRect: Rect) -> Unit)? = null
+    fun setOnMoveOrSizeChangeListener(listener: ((boxRegionRect: Rect) -> Unit)? = null) {
+        onMoveOrSizeChangeListener = listener
+    }
 }

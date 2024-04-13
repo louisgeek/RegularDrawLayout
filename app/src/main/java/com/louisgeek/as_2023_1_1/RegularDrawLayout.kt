@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.ViewConfigurationCompat
 import androidx.core.view.isVisible
 import androidx.customview.widget.ViewDragHelper

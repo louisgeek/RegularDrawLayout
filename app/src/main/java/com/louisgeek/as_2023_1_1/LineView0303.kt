@@ -12,7 +12,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import kotlin.math.abs
+import kotlin.math.log
 import kotlin.math.min
 
 class LineView0303 : View {
@@ -99,7 +101,7 @@ class LineView0303 : View {
         paintLineDot.strokeCap = Paint.Cap.ROUND
 
 
-        setPaddingRelative(20, 20, 20, 20)
+//        setPaddingRelative(20, 20, 20, 20)
 
     }
 
@@ -183,12 +185,19 @@ class LineView0303 : View {
         refreshSize(measuredWidth.toFloat(), measuredHeight.toFloat())
         //
 //        lineLengthMin = (1.0F / 4 * min(measuredWidth, measuredHeight)).toInt()
+        Log.e(TAG, "onMeasure: zfq ")
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
         refreshSize(w.toFloat(), h.toFloat())
+
+        val xxx = Rect(this.left, this.top, this.right, this.bottom)
+        Log.e(TAG, "onSizeChanged: zfq xxx=$xxx")
+        val startEndPoints = getStartEndPoints()
+        onMoveOrSizeChangeListener?.invoke(xxx, startEndPoints)
+
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -201,6 +210,14 @@ class LineView0303 : View {
         canvas.drawRect(touchRectLineEnd, paintTest)
 //        paintTest.color = Color.DKGRAY
 //        canvas.drawRect(touchRectLineCenter, paintTest)
+        val wid = abs(lineDotStart.x - lineDotEnd.x)
+        val hei = abs(lineDotStart.y - lineDotEnd.y)
+        val nameWid = 50
+        val nameHei = 50
+        val nameLeft = wid / 2 - nameWid / 2
+        val nameTop = hei / 2 - nameHei / 2
+        val nameRect = RectF(nameLeft, nameTop, nameLeft + nameWid, nameTop + nameHei)
+        canvas.drawRect(nameRect, paintTest)
 
         paintLineDot.color = Color.BLUE
         canvas.drawPoint(
@@ -362,6 +379,12 @@ class LineView0303 : View {
                             newViewRect.top = parentView.height - this.height
                         }
                     }
+                    val mLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+                    Log.e(
+                        TAG,
+                        "onTouchEvent: topMargin=${mLayoutParams.topMargin} marginStart=${mLayoutParams.marginStart}"
+                    )
+
                     this.left = newViewRect.left
                     this.top = newViewRect.top
                     this.right = newViewRect.right
@@ -470,6 +493,7 @@ class LineView0303 : View {
 //            lineDirectTB_RRRR = false
 //        }
     }
+
 
     private fun dealDown(event: MotionEvent) {
         val eventX = event.x
@@ -586,7 +610,42 @@ class LineView0303 : View {
         return lineDirectLR_Reverse
     }
 
-    fun getLineDirectTB_RRRR(): Boolean {
-        return lineDirectTB_Reverse
+    fun getLineRegionRect(): Rect {
+        val xxx = Rect(this.left, this.top, this.right, this.bottom)
+        return xxx
+    }
+
+    fun getStartEndPoints(): Pair<Point, Point> {
+        val leftTop_To_RightBottom =
+            !lineDirectLR_Reverse && !lineDirectTB_Reverse
+        val topRight_To_BottomLeft =
+            lineDirectLR_Reverse && !lineDirectTB_Reverse
+        val rightBottom_To_LeftTop =
+            lineDirectLR_Reverse && lineDirectTB_Reverse
+        val bottomLeft_To_TopRight =
+            !lineDirectLR_Reverse && lineDirectTB_Reverse
+        val start = Point()
+        val end = Point()
+        if (leftTop_To_RightBottom) {
+            start.set(this.left, this.top)
+            end.set(this.right, this.bottom)
+        } else if (topRight_To_BottomLeft) {
+            start.set(this.right, this.top)
+            end.set(this.left, this.bottom)
+        } else if (rightBottom_To_LeftTop) {
+            start.set(this.right, this.bottom)
+            end.set(this.left, this.top)
+        } else if (bottomLeft_To_TopRight) {
+            start.set(this.left, this.bottom)
+            end.set(this.right, this.top)
+        }
+        return Pair(start, end)
+    }
+
+    private var onMoveOrSizeChangeListener: ((lineRegionRect: Rect, Pair<Point, Point>) -> Unit)? =
+        null
+
+    fun setOnMoveOrSizeChangeListener(listener: ((lineRegionRect: Rect, Pair<Point, Point>) -> Unit)? = null) {
+        onMoveOrSizeChangeListener = listener
     }
 }
