@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         tv.setOnClickListener {
             gzLayout.removeAllViews()
 
-            val dotPoint = Point(0, 0)
+            val dotPoint = Point(200, 200)
             gzLayout.addDotView(dotPoint)
 
             val lineDotStart = Point(0, 0)

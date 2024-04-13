@@ -109,8 +109,8 @@ class DotView0302 : View {
     }
 
     private fun refreshSize(wid: Float, hei: Float) {
-        canOutWid = (hei / 2).toInt()
-        canOutHei = bmpDot.width / 2
+        canOutWid = bmpDot.width / 2
+        canOutHei = (hei / 2).toInt()
 //        if (direct == direct_left) {
 //
 //        }else if (direct == direct_right){
@@ -244,8 +244,10 @@ class DotView0302 : View {
         if (directReverse) {
             //线、叉在左侧
             bmpDotLeft = (this.width - bmpDot.width).toFloat()
-//            bmpDotTop = bmpDotPoint.x
+        } else {
+            bmpDotLeft = 0F
         }
+        bmpDotTop = (this.height / 2 - bmpDot.height / 2).toFloat()
         canvas.drawBitmap(bmpDot, bmpDotLeft, bmpDotTop, paint)
 //
         var startX = 0F
@@ -256,21 +258,21 @@ class DotView0302 : View {
         var bmpDeleteTop = 0F
         if (directReverse) {
             //线、叉在左侧
-            startX = bmpDotLeft + bmpDot.width
-            startY = bmpDotTop + bmpDot.height / 2
-            stopX = startX + lineWid
-            stopY = startY
-
-            bmpDeleteLeft = stopX
-            bmpDeleteTop = startY - bmpDelete.height / 2
-        } else {
-            //线、叉在右侧
             startX = bmpDotLeft - lineWid
             startY = bmpDotTop + bmpDot.height / 2
             stopX = startX + lineWid
             stopY = startY
 
             bmpDeleteLeft = startX - bmpDelete.width
+            bmpDeleteTop = startY - bmpDelete.height / 2
+        } else {
+            //线、叉在右侧
+            startX = bmpDotLeft + bmpDot.width
+            startY = bmpDotTop + bmpDot.height / 2
+            stopX = startX + lineWid
+            stopY = startY
+
+            bmpDeleteLeft = stopX
             bmpDeleteTop = startY - bmpDelete.height / 2
         }
         canvas.drawLine(startX, startY, stopX, stopY, paintLine)
@@ -291,6 +293,7 @@ class DotView0302 : View {
     fun getBmpDotWid(): Int {
         return bmpDot.width
     }
+
     fun getDotPoint(): Point {
         Log.e(TAG, "getDotPoint: marginStart=${this.marginStart} marginEnd=${this.marginEnd}")
         Log.e(TAG, "getDotPoint: left=${this.left} top=${this.top}")
