@@ -55,6 +55,10 @@ class BoxView0301 : View {
     private var TOUCH_RIGHT_BOTTOM = 3
     private var TOUCH_BOTTOM_LEFT = 4
     private var TOUCH_CENTER = 5
+    private var TOUCH_LEFT = 6
+    private var TOUCH_TOP = 7
+    private var TOUCH_RIGHT = 8
+    private var TOUCH_BOTTOM = 9
     private var touchArea = TOUCH_NONE
 
     //
@@ -62,6 +66,10 @@ class BoxView0301 : View {
     private var touchRectTopRight = RectF()
     private var touchRectRightBottom = RectF()
     private var touchRectBottomLeft = RectF()
+    private var touchRectLeft = RectF()
+    private var touchRectTop = RectF()
+    private var touchRectRight = RectF()
+    private var touchRectBottom = RectF()
     private var touchRectCenter = RectF()
 
 
@@ -69,8 +77,8 @@ class BoxView0301 : View {
     private lateinit var paintBox: Paint //画框
     private lateinit var paintBoxDot: Paint //画框的四个端点
     private var boxRect = RectF()
-    private var LINE_WIDTH = 5 //线的宽度
-    private var LINE_DOT_WID = 55 //线上点的宽度
+    private var LINE_WIDTH = 6 //线的宽度
+    private var LINE_DOT_WID = 24 //线上点的宽度
 
 
     //
@@ -149,7 +157,7 @@ class BoxView0301 : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.YELLOW)
+//        canvas.drawColor(Color.YELLOW)
 
 //        paintTest.color = Color.CYAN
 //        canvas.drawRect(touchRectLeftTop, paintTest)
@@ -161,29 +169,38 @@ class BoxView0301 : View {
 //        canvas.drawRect(touchRectBottomLeft, paintTest)
 //        paintTest.color = Color.RED
 //        canvas.drawRect(touchRectCenter, paintTest)
+
+//        paintTest.color = Color.CYAN
+//        canvas.drawRect(touchRectLeft, paintTest)
+//        paintTest.color = Color.GRAY
+//        canvas.drawRect(touchRectTop, paintTest)
+//        paintTest.color = Color.BLACK
+//        canvas.drawRect(touchRectRight, paintTest)
+//        paintTest.color = Color.DKGRAY
+//        canvas.drawRect(touchRectBottom, paintTest)
+
         canvas.drawRect(boxRect, paintBox)
 
 
-
-        paintBoxDot.color = Color.BLUE
+//        paintBoxDot.color = Color.BLUE
         canvas.drawPoint(
             boxRect.left,
             boxRect.top,
             paintBoxDot
         )
-        paintBoxDot.color = Color.GREEN
+//        paintBoxDot.color = Color.GREEN
         canvas.drawPoint(
             boxRect.right,
             boxRect.top,
             paintBoxDot
         )
-        paintBoxDot.color = Color.DKGRAY
+//        paintBoxDot.color = Color.DKGRAY
         canvas.drawPoint(
             boxRect.right,
             boxRect.bottom,
             paintBoxDot
         )
-        paintBoxDot.color = Color.CYAN
+//        paintBoxDot.color = Color.CYAN
         canvas.drawPoint(
             boxRect.left,
             boxRect.bottom,
@@ -251,29 +268,39 @@ class BoxView0301 : View {
                     } else if (touchArea == TOUCH_BOTTOM_LEFT) {
                         changeBottom(disY)
                         changeLeft(disX)
+                    } else if (touchArea == TOUCH_LEFT) {
+                        changeLeft(disX)
+                    } else if (touchArea == TOUCH_TOP) {
+                        changeTop(disY)
+                    } else if (touchArea == TOUCH_RIGHT) {
+                        changeRight(disX)
+                    } else if (touchArea == TOUCH_BOTTOM) {
+                        changeBottom(disY)
                     } else if (touchArea == TOUCH_CENTER) {
                         newViewRect.left = originViewRect.left + disX
                         newViewRect.top = originViewRect.top + disY
                         newViewRect.right = originViewRect.right + disX
                         newViewRect.bottom = originViewRect.bottom + disY
-                        val parentView = this.parent as View
-                        if (newViewRect.left < parentView.left - canOutWid) {
-                            newViewRect.left = parentView.left - canOutWid
-                            newViewRect.right = this.width - canOutWid
-                        }
-                        if (newViewRect.top < parentView.top - canOutHei) {
-                            newViewRect.top = parentView.top - canOutHei
-                            newViewRect.bottom = this.height - canOutHei
-                        }
-                        if (newViewRect.right > parentView.right + canOutWid) {
-                            newViewRect.right = parentView.right + canOutWid
-                            newViewRect.left = parentView.right + canOutWid - this.width
-                        }
-                        if (newViewRect.bottom > parentView.bottom + canOutHei) {
-                            newViewRect.bottom = parentView.bottom + canOutHei
-                            newViewRect.top = parentView.bottom + canOutHei - this.height
-                        }
                     }
+                    //
+                    val parentView = this.parent as View
+                    if (newViewRect.left < parentView.left - canOutWid) {
+                        newViewRect.left = parentView.left - canOutWid
+                        newViewRect.right = this.width - canOutWid
+                    }
+                    if (newViewRect.top < parentView.top - canOutHei) {
+                        newViewRect.top = parentView.top - canOutHei
+                        newViewRect.bottom = this.height - canOutHei
+                    }
+                    if (newViewRect.right > parentView.right + canOutWid) {
+                        newViewRect.right = parentView.right + canOutWid
+                        newViewRect.left = parentView.right + canOutWid - this.width
+                    }
+                    if (newViewRect.bottom > parentView.bottom + canOutHei) {
+                        newViewRect.bottom = parentView.bottom + canOutHei
+                        newViewRect.top = parentView.bottom + canOutHei - this.height
+                    }
+                    //
                     this.left = newViewRect.left
                     this.top = newViewRect.top
                     this.right = newViewRect.right
@@ -370,6 +397,33 @@ class BoxView0301 : View {
             0 + touchDisWid,
             hei + touchDisHei
         )
+
+        touchRectLeft.set(
+            0 - touchDisWid,
+            0 + touchDisHei,
+            0 + touchDisWid,
+            hei - touchDisHei
+        )
+        touchRectTop.set(
+            0 + touchDisWid,
+            0 - touchDisHei,
+            wid - touchDisWid,
+            0 + touchDisHei
+        )
+        touchRectRight.set(
+            wid - touchDisWid,
+            0 + touchDisHei,
+            wid + touchDisWid,
+            hei - touchDisHei
+        )
+        touchRectBottom.set(
+            0 + touchDisWid,
+            hei - touchDisHei,
+            wid - touchDisWid,
+            hei + touchDisHei
+        )
+
+
         touchRectCenter.set(
             0 + touchDisWid,
             0 + touchDisHei,
@@ -388,6 +442,18 @@ class BoxView0301 : View {
         } else if (touchRectBottomLeft.contains(eventX, eventY)) {
             touchArea = TOUCH_BOTTOM_LEFT
             Log.e(TAG, "dealDown: TOUCH_BOTTOM_LEFT")
+        } else if (touchRectLeft.contains(eventX, eventY)) {
+            touchArea = TOUCH_LEFT
+            Log.e(TAG, "dealDown: TOUCH_LEFT")
+        } else if (touchRectTop.contains(eventX, eventY)) {
+            touchArea = TOUCH_TOP
+            Log.e(TAG, "dealDown: TOUCH_TOP")
+        } else if (touchRectRight.contains(eventX, eventY)) {
+            touchArea = TOUCH_RIGHT
+            Log.e(TAG, "dealDown: TOUCH_RIGHT")
+        } else if (touchRectBottom.contains(eventX, eventY)) {
+            touchArea = TOUCH_BOTTOM
+            Log.e(TAG, "dealDown: TOUCH_BOTTOM")
         } else if (touchRectCenter.contains(eventX, eventY)) {
             touchArea = TOUCH_CENTER
             Log.e(TAG, "dealDown: TOUCH_CENTER")

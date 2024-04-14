@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             val lineRegionHei = abs(lineDotEnd.y - lineDotStart.y)
             val lineRegionSize = Size(lineRegionWid, lineRegionHei)
 
-//            gzLayout.addLineView(lineDotStart, lineDotEnd, lineRegionSize)
+            gzLayout.addLineView(lineDotStart, lineDotEnd, lineRegionSize)
 
             val boxDotStart = Point(0, 0)
             val boxDotEnd = Point(200, 200)
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             val boxRegionHei = abs(lineDotEnd.y - lineDotStart.y)
             val boxRegionSize = Size(boxRegionWid, boxRegionHei)
 
-            gzLayout.addBoxView(boxDotStart, boxDotEnd, boxRegionSize)
+//            gzLayout.addBoxView(boxDotStart, boxDotEnd, boxRegionSize)
 
         }
 

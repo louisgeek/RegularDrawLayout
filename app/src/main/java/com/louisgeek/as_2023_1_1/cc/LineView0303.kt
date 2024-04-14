@@ -68,8 +68,8 @@ class LineView0303 : View {
     private lateinit var paintLineDot: Paint //画线的两个端点
     private var lineDotStart = PointF() //线的起点坐标
     private var lineDotEnd = PointF() //线的终点坐标
-    private var LINE_WIDTH = 5 //线的宽度
-    private var LINE_DOT_WID = 55 //线上点的宽度
+    private var LINE_WIDTH = 6 //线的宽度
+    private var LINE_DOT_WID = 24 //线上点的宽度
 
 
     //
@@ -200,7 +200,7 @@ class LineView0303 : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.YELLOW)
+//        canvas.drawColor(Color.YELLOW)
 
 //        paintTest.color = Color.CYAN
 //        canvas.drawRect(touchRectLineStart, paintTest)
@@ -212,9 +212,9 @@ class LineView0303 : View {
         val hei = abs(lineDotStart.y - lineDotEnd.y)
         val nameWid = 50
         val nameHei = 50
-        val nameLeft = wid / 2 - nameWid / 2
-        val nameTop = hei / 2 - nameHei / 2
-        val nameRect = RectF(nameLeft, nameTop, nameLeft + nameWid, nameTop + nameHei)
+        val nameLeft = this.width / 2 - nameWid / 2
+        val nameTop = this.height / 2 - nameHei / 2
+        val nameRect = Rect(nameLeft, nameTop, nameLeft + nameWid, nameTop + nameHei)
         canvas.drawRect(nameRect, paintTest)
 
         paintLineDot.color = Color.BLUE
@@ -359,30 +359,31 @@ class LineView0303 : View {
                         newViewRect.top = originViewRect.top + disY
                         newViewRect.right = originViewRect.right + disX
                         newViewRect.bottom = originViewRect.bottom + disY
-                        val parentView = this.parent as View
-                        if (newViewRect.left < parentView.left - canOutWid) {
-                            newViewRect.left = parentView.left - canOutWid
-                            newViewRect.right = this.width - canOutWid
-                        }
-                        if (newViewRect.top < parentView.top - canOutHei) {
-                            newViewRect.top = parentView.top - canOutHei
-                            newViewRect.bottom = this.height - canOutHei
-                        }
-                        if (newViewRect.right > parentView.right + canOutWid) {
-                            newViewRect.right = parentView.right + canOutWid
-                            newViewRect.left = parentView.right + canOutWid - this.width
-                        }
-                        if (newViewRect.bottom > parentView.bottom + canOutHei) {
-                            newViewRect.bottom = parentView.bottom + canOutHei
-                            newViewRect.top = parentView.bottom + canOutHei - this.height
-                        }
                     }
                     val mLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
                     Log.e(
                         TAG,
                         "onTouchEvent: topMargin=${mLayoutParams.topMargin} marginStart=${mLayoutParams.marginStart}"
                     )
-
+                    //
+                    val parentView = this.parent as View
+                    if (newViewRect.left < parentView.left - canOutWid) {
+                        newViewRect.left = parentView.left - canOutWid
+                        newViewRect.right = this.width - canOutWid
+                    }
+                    if (newViewRect.top < parentView.top - canOutHei) {
+                        newViewRect.top = parentView.top - canOutHei
+                        newViewRect.bottom = this.height - canOutHei
+                    }
+                    if (newViewRect.right > parentView.right + canOutWid) {
+                        newViewRect.right = parentView.right + canOutWid
+                        newViewRect.left = parentView.right + canOutWid - this.width
+                    }
+                    if (newViewRect.bottom > parentView.bottom + canOutHei) {
+                        newViewRect.bottom = parentView.bottom + canOutHei
+                        newViewRect.top = parentView.bottom + canOutHei - this.height
+                    }
+                    //
                     this.left = newViewRect.left
                     this.top = newViewRect.top
                     this.right = newViewRect.right
