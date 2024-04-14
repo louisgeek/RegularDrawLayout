@@ -7,7 +7,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Point
-import android.graphics.PointF
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
@@ -15,7 +14,6 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
-import com.louisgeek.as_2023_1_1.BoxView0301
 import com.louisgeek.as_2023_1_1.R
 import kotlin.math.abs
 import kotlin.math.max
@@ -60,8 +58,8 @@ class DotView0302 : View {
     private lateinit var bmpDelete: Bitmap
 
     //    private  var bmpDotRect = RectF()
-    private var lineWid = 150
-    private var lineSize = 10
+    private var lineWid = 120
+    private var lineSize = 5
 
 //    private var bmpDotPoint = PointF(0F, 0F)
 
@@ -77,7 +75,7 @@ class DotView0302 : View {
         paintLine = Paint()
         paintLine.isAntiAlias = true
         paintLine.style = Paint.Style.STROKE
-        paintLine.color = Color.RED
+        paintLine.color = Color.GRAY
         paintLine.strokeWidth = lineSize.toFloat()
 //        rectF = RectF()
 //        rectF.set(110F, 120F, 300F, 400F)
@@ -157,8 +155,8 @@ class DotView0302 : View {
                     newViewRect.bottom = originViewRect.bottom + disY
 
                     val parentView = this.parent as View
-                    if (newViewRect.left < parentView.top - canOutWid) {
-                        newViewRect.left = parentView.top - canOutWid
+                    if (newViewRect.left < parentView.left - canOutWid) {
+                        newViewRect.left = parentView.left - canOutWid
                         newViewRect.right = this.width - canOutWid
                     }
                     if (newViewRect.top < parentView.top - canOutHei) {
@@ -167,11 +165,11 @@ class DotView0302 : View {
                     }
                     if (newViewRect.right > parentView.right + canOutWid) {
                         newViewRect.right = parentView.right + canOutWid
-                        newViewRect.left = parentView.right - this.width + canOutWid
+                        newViewRect.left = parentView.right + canOutWid - this.width
                     }
                     if (newViewRect.bottom > parentView.bottom + canOutHei) {
                         newViewRect.bottom = parentView.bottom + canOutHei
-                        newViewRect.top = parentView.bottom - this.height + canOutHei
+                        newViewRect.top = parentView.bottom + canOutHei - this.height
                     }
 
                     if (directReverse) {
@@ -232,11 +230,11 @@ class DotView0302 : View {
     }
 
 
-    var canOutWid = 0
-    var canOutHei = 0
+    private var canOutWid = 0
+    private var canOutHei = 0
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.YELLOW)
+//        canvas.drawColor(Color.YELLOW)
 
         Log.e(TAG, "onDraw: left=$left top=$top right=$right bottom=$bottom")
         var bmpDotLeft = 0F

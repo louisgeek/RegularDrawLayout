@@ -3,13 +3,10 @@ package com.louisgeek.as_2023_1_1
 import android.graphics.Point
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.util.Size
-import android.view.View
 import android.widget.TextView
 import com.louisgeek.as_2023_1_1.cc.GZLayout
 import kotlin.math.abs
-import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,11 +19,15 @@ class MainActivity : AppCompatActivity() {
         tv.setOnClickListener {
             gzLayout.removeAllViews()
 
-            val dotPoint = Point(200, 200)
-            gzLayout.addDotView(dotPoint)
+            val dotPoint = Point(0, 0)
+//            val dotPoint = Point(200, 200)
+//            gzLayout.addDotView(dotPoint)
 
-            val lineDotStart = Point(0, 0)
-            val lineDotEnd = Point(300, 300)
+//            val lineDotStart = Point(0, 0)
+//            val lineDotEnd = Point(200, 200)
+
+            val lineDotStart = Point(300, 300)
+            val lineDotEnd = Point(600, 600)
 
 //            val lineDotStart = Point(200, 200)
 //            val lineDotEnd = Point(400, 400)
@@ -41,22 +42,24 @@ class MainActivity : AppCompatActivity() {
 
 //            gzLayout.addLineView(lineDotStart, lineDotEnd, lineRegionSize)
 
-//            val boxDotStart = Point(0, 0)
-//            val boxDotEnd = Point(200, 200)
+            val boxDotStart = Point(0, 0)
+            val boxDotEnd = Point(200, 200)
 
 //            val boxDotStart = Point(200, 200)
 //            val boxDotEnd = Point(400, 400)
-//            val boxRegionWid = abs(lineDotEnd.x - lineDotStart.x)
-//            val boxRegionHei = abs(lineDotEnd.y - lineDotStart.y)
-//            val boxRegionSize = Size(boxRegionWid, boxRegionHei)
-//            gzLayout.addBoxView(boxDotStart,boxDotEnd,boxRegionSize)
+
+            val boxRegionWid = abs(lineDotEnd.x - lineDotStart.x)
+            val boxRegionHei = abs(lineDotEnd.y - lineDotStart.y)
+            val boxRegionSize = Size(boxRegionWid, boxRegionHei)
+
+            gzLayout.addBoxView(boxDotStart, boxDotEnd, boxRegionSize)
 
         }
 
         tvEnd.setOnClickListener {
-            gzLayout.getDotList()
-//            gzLayout.getPoList()
-//            gzLayout.getBoxPointsList()
+            gzLayout.getDotPointsList()
+            gzLayout.getLinePointsList()
+            gzLayout.getBoxPointsList()
         }
 
     }

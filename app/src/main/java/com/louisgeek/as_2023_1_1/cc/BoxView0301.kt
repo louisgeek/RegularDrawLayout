@@ -1,15 +1,15 @@
-package com.louisgeek.as_2023_1_1
+package com.louisgeek.as_2023_1_1.cc
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Point
-import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
+import android.util.Size
 import android.view.MotionEvent
 import android.view.View
 import kotlin.math.abs
@@ -69,7 +69,8 @@ class BoxView0301 : View {
     private lateinit var paintBox: Paint //画框
     private lateinit var paintBoxDot: Paint //画框的四个端点
     private var boxRect = RectF()
-    private var LINE_WIDTH = 8 //线的宽度
+    private var LINE_WIDTH = 5 //线的宽度
+    private var LINE_DOT_WID = 55 //线上点的宽度
 
 
     //
@@ -89,38 +90,49 @@ class BoxView0301 : View {
         paintBox = Paint()
         paintBox.isAntiAlias = true
         paintBox.style = Paint.Style.STROKE
-        paintBox.color = Color.RED
+        paintBox.color = Color.GRAY
         paintBox.strokeWidth = LINE_WIDTH.toFloat()
 
         paintBoxDot = Paint()
         paintBoxDot.isAntiAlias = true
         paintBoxDot.style = Paint.Style.STROKE
         paintBoxDot.color = Color.BLUE
-        paintBoxDot.strokeWidth = 60F
+        paintBoxDot.strokeWidth = LINE_DOT_WID.toFloat()
         paintBoxDot.strokeCap = Paint.Cap.ROUND
 
 
     }
 
+    private var canOutWid = 0
+    private var canOutHei = 0
 
     private fun refreshSize(wid: Float, hei: Float) {
         //设定可触摸区域
         touchDisWid = 1.0F / 4 * wid
         touchDisHei = 1.0F / 4 * hei
 
+        canOutWid = LINE_DOT_WID / 2
+        canOutHei = LINE_DOT_WID / 2
+
         //设定线的启动和终点---以view为基准
         //
         boxRect.set(
-            0F + LINE_WIDTH / 2,
-            0F + LINE_WIDTH / 2,
-            wid - LINE_WIDTH / 2,
-            hei - LINE_WIDTH / 2
+            0F + LINE_DOT_WID / 2 + paddingStart,
+            0F + LINE_DOT_WID / 2 + paddingTop,
+            wid - LINE_DOT_WID / 2 - paddingEnd,
+            hei - LINE_DOT_WID / 2 - paddingBottom
         )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         //
+        val wid =
+            this.paddingStart + LINE_DOT_WID / 2 + boxRegionSize.width + LINE_DOT_WID / 2 + this.paddingEnd
+        val hei =
+            this.paddingTop + LINE_DOT_WID / 2 + boxRegionSize.height + LINE_DOT_WID / 2 + this.paddingBottom
+        setMeasuredDimension(wid, hei)
+
         refreshSize(measuredWidth.toFloat(), measuredHeight.toFloat())
         //
 //        lineLengthMin = (1.0F / 4 * min(measuredWidth, measuredHeight)).toInt()
@@ -149,8 +161,35 @@ class BoxView0301 : View {
 //        canvas.drawRect(touchRectBottomLeft, paintTest)
 //        paintTest.color = Color.RED
 //        canvas.drawRect(touchRectCenter, paintTest)
-
         canvas.drawRect(boxRect, paintBox)
+
+
+
+        paintBoxDot.color = Color.BLUE
+        canvas.drawPoint(
+            boxRect.left,
+            boxRect.top,
+            paintBoxDot
+        )
+        paintBoxDot.color = Color.GREEN
+        canvas.drawPoint(
+            boxRect.right,
+            boxRect.top,
+            paintBoxDot
+        )
+        paintBoxDot.color = Color.DKGRAY
+        canvas.drawPoint(
+            boxRect.right,
+            boxRect.bottom,
+            paintBoxDot
+        )
+        paintBoxDot.color = Color.CYAN
+        canvas.drawPoint(
+            boxRect.left,
+            boxRect.bottom,
+            paintBoxDot
+        )
+
 
 //        paintBoxDot.color = Color.BLUE
 //        canvas.drawPoint(
@@ -218,21 +257,21 @@ class BoxView0301 : View {
                         newViewRect.right = originViewRect.right + disX
                         newViewRect.bottom = originViewRect.bottom + disY
                         val parentView = this.parent as View
-                        if (newViewRect.left < 0) {
-                            newViewRect.left = 0
-                            newViewRect.right = this.width
+                        if (newViewRect.left < parentView.left - canOutWid) {
+                            newViewRect.left = parentView.left - canOutWid
+                            newViewRect.right = this.width - canOutWid
                         }
-                        if (newViewRect.top < 0) {
-                            newViewRect.top = 0
-                            newViewRect.bottom = this.height
+                        if (newViewRect.top < parentView.top - canOutHei) {
+                            newViewRect.top = parentView.top - canOutHei
+                            newViewRect.bottom = this.height - canOutHei
                         }
-                        if (newViewRect.right > parentView.width) {
-                            newViewRect.right = parentView.width
-                            newViewRect.left = parentView.width - this.width
+                        if (newViewRect.right > parentView.right + canOutWid) {
+                            newViewRect.right = parentView.right + canOutWid
+                            newViewRect.left = parentView.right + canOutWid - this.width
                         }
-                        if (newViewRect.bottom > parentView.height) {
-                            newViewRect.bottom = parentView.height
-                            newViewRect.top = parentView.height - this.height
+                        if (newViewRect.bottom > parentView.bottom + canOutHei) {
+                            newViewRect.bottom = parentView.bottom + canOutHei
+                            newViewRect.top = parentView.bottom + canOutHei - this.height
                         }
                     }
                     this.left = newViewRect.left
@@ -259,82 +298,20 @@ class BoxView0301 : View {
     private fun changeLeft(disX: Int) {
         Log.e(TAG, "changeLeft: disX=$disX")
         newViewRect.left = originViewRect.left + disX
-//        if (newViewRect.left > originViewRect.right - LINE_WIDTH) {
-//            newViewRect.left = originViewRect.right - LINE_WIDTH
-//            newViewRect.right = originViewRect.left + disX + LINE_WIDTH
-//            lineDirectLR_Reverse = !downLineDirectLR_Reverse //!按下
-//        }
-//        if (lineDirectLR_Reverse != downLineDirectLR_Reverse) {
-//            if (newViewRect.left < originViewRect.right - LINE_WIDTH) {
-//                lineDirectLR_Reverse = downLineDirectLR_Reverse //按下
-//            }
-//        }
-//        if (newViewRect.left < originViewRect.right - lineWidth) { //？？？
-//            newViewRect.left = originViewRect.right - lineWidth
-//            newViewRect.right = originViewRect.left + disX + lineWidth
-//            lineDirectLR_RRRR = false
-//        }
     }
 
     private fun changeTop(disY: Int) {
         newViewRect.top = originViewRect.top + disY
-//        if (newViewRect.top > originViewRect.bottom - LINE_WIDTH) {
-//            //上边到了下边的下面--交换两边
-//            newViewRect.top = originViewRect.bottom - LINE_WIDTH
-//            newViewRect.bottom = originViewRect.top + disY + LINE_WIDTH
-//            lineDirectTB_Reverse = !downLineDirectTB_Reverse //!按下
-//        }
-//        if (lineDirectTB_Reverse != downLineDirectTB_Reverse) {
-//            if (newViewRect.top < originViewRect.bottom - LINE_WIDTH) {
-//                lineDirectTB_Reverse = downLineDirectTB_Reverse //按下
-//            }
-//        }
-
-//        if (newViewRect.top < originViewRect.bottom - lineWidth) { //？？？
-//            newViewRect.top = originViewRect.bottom - lineWidth
-//            newViewRect.bottom = originViewRect.top + disY + lineWidth
-//            lineDirectTB_RRRR = false
-//        }
     }
 
     private fun changeRight(disX: Int) {
         Log.e(TAG, "changeRight: disX=$disX")
         newViewRect.right = originViewRect.right + disX
-        //
-//        if (newViewRect.right < originViewRect.left + LINE_WIDTH) {
-//            newViewRect.right = originViewRect.left + LINE_WIDTH
-//            newViewRect.left = originViewRect.right + disX - LINE_WIDTH
-//            lineDirectLR_Reverse = !downLineDirectLR_Reverse //!按下
-//        }
-//        if (lineDirectLR_Reverse != downLineDirectLR_Reverse) {
-//            if (newViewRect.right > originViewRect.left + LINE_WIDTH) {
-//                lineDirectLR_Reverse = downLineDirectLR_Reverse //按下
-//            }
-//        }
-//        if (newViewRect.right > originViewRect.left + lineWidth) { //？？？
-//            newViewRect.right = originViewRect.left + lineWidth
-//            newViewRect.left = originViewRect.right + disX - lineWidth
-//        }
     }
 
     private fun changeBottom(disY: Int) {
         Log.e(TAG, "changeBottom: disY=$disY")
         newViewRect.bottom = originViewRect.bottom + disY
-//        if (newViewRect.bottom < originViewRect.top + LINE_WIDTH) {
-//            newViewRect.bottom = originViewRect.top + LINE_WIDTH
-//            newViewRect.top = originViewRect.bottom + disY - LINE_WIDTH
-//            lineDirectTB_Reverse = !downLineDirectTB_Reverse //!按下
-//        }
-//        if (lineDirectTB_Reverse != downLineDirectTB_Reverse) {
-//            if (newViewRect.bottom > originViewRect.top + LINE_WIDTH) {
-//                lineDirectTB_Reverse = downLineDirectTB_Reverse //按下
-//            }
-//        }
-        //        if (newViewRect.bottom > originViewRect.top + lineWidth) { //???
-//            newViewRect.bottom = originViewRect.top + lineWidth
-//            newViewRect.top = originViewRect.bottom + disY - lineWidth
-//            lineDirectTB_RRRR = false
-//        }
     }
 
     private fun dealDown(event: MotionEvent) {
@@ -420,13 +397,22 @@ class BoxView0301 : View {
     fun getStartEndPoints(): Pair<Point, Point> {
         val start = Point()
         val end = Point()
-        start.set(this.left, this.top)
-        end.set(this.right, this.bottom)
+        start.set(this.left + LINE_DOT_WID / 2, this.top + LINE_DOT_WID / 2)
+        end.set(this.right - LINE_DOT_WID / 2, this.bottom - LINE_DOT_WID / 2)
         return Pair(start, end)
     }
 
     private var onMoveOrSizeChangeListener: ((boxRegionRect: Rect) -> Unit)? = null
     fun setOnMoveOrSizeChangeListener(listener: ((boxRegionRect: Rect) -> Unit)? = null) {
         onMoveOrSizeChangeListener = listener
+    }
+
+    private var boxRegionSize = Size(0, 0)
+    fun setBoxRegionSize(boxRegionSize: Size) {
+        this.boxRegionSize = boxRegionSize
+    }
+
+    fun getBoxDotWid(): Int {
+        return LINE_DOT_WID
     }
 }

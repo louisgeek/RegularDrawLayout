@@ -1,4 +1,4 @@
-package com.louisgeek.as_2023_1_1
+package com.louisgeek.as_2023_1_1.cc
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,12 +10,11 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
+import android.util.Size
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.abs
-import kotlin.math.log
-import kotlin.math.min
 
 class LineView0303 : View {
     companion object {
@@ -70,7 +69,7 @@ class LineView0303 : View {
     private var lineDotStart = PointF() //线的起点坐标
     private var lineDotEnd = PointF() //线的终点坐标
     private var LINE_WIDTH = 5 //线的宽度
-    private var LINE_DOT_WID = 25 //线上点的宽度
+    private var LINE_DOT_WID = 55 //线上点的宽度
 
 
     //
@@ -79,6 +78,8 @@ class LineView0303 : View {
     private var lineDirectTB_Reverse = false
 
 
+    private var canOutWid = 0
+    private var canOutHei = 0
     private fun init() {
         paintTest = Paint()
         paintTest.isAntiAlias = true
@@ -90,7 +91,7 @@ class LineView0303 : View {
         paintLine = Paint()
         paintLine.isAntiAlias = true
         paintLine.style = Paint.Style.STROKE
-        paintLine.color = Color.RED
+        paintLine.color = Color.GRAY
         paintLine.strokeWidth = LINE_WIDTH.toFloat()
 
         paintLineDot = Paint()
@@ -112,6 +113,9 @@ class LineView0303 : View {
 //        touchDisHei = 1.0F / 4 * hei
         touchDisWid = 60F
         touchDisHei = 60F
+        canOutWid = LINE_DOT_WID / 2
+        canOutHei = LINE_DOT_WID / 2
+
         Log.e(TAG, "refreshSize: wid=$wid hei=$hei")
         //设定线的启动和终点---以view为基准
         val viewPointLeftTop =
@@ -141,19 +145,7 @@ class LineView0303 : View {
             lineDotEnd.set(viewPointTopRight)
         }
 
-//        if (!lineDirectLR_Reverse && !lineDirectTB_Reverse) {
-//            lineDotStart.set(viewPointLeftTop.x+LINE_WIDTH/2,viewPointLeftTop.y+LINE_WIDTH/2)
-//            lineDotEnd.set(viewPointRightBottom.x-LINE_WIDTH/2,viewPointRightBottom.y-LINE_WIDTH/2)
-//        } else if (lineDirectLR_Reverse && !lineDirectTB_Reverse) {
-//            lineDotStart.set(viewPointTopRight.x-LINE_WIDTH/2,viewPointTopRight.y+LINE_WIDTH/2)
-//            lineDotEnd.set(viewPointBottomLeft.x+LINE_WIDTH/2,viewPointBottomLeft.y-LINE_WIDTH/2)
-//        } else if (lineDirectLR_Reverse && lineDirectTB_Reverse) {
-//            lineDotStart.set(viewPointRightBottom.x-LINE_WIDTH/2,viewPointRightBottom.y-LINE_WIDTH/2)
-//            lineDotEnd.set(viewPointLeftTop.x+LINE_WIDTH/2,viewPointLeftTop.y+LINE_WIDTH/2)
-//        } else if (!lineDirectLR_Reverse && lineDirectTB_Reverse) {
-//            lineDotStart.set(viewPointBottomLeft.x+LINE_WIDTH/2,viewPointBottomLeft.y-LINE_WIDTH/2)
-//            lineDotEnd.set(viewPointTopRight.x-LINE_WIDTH/2,viewPointTopRight.y+LINE_WIDTH/2)
-//        }
+
         touchRectLineStart.set(
             lineDotStart.x - touchDisWid,
             lineDotStart.y - touchDisHei,
@@ -182,6 +174,12 @@ class LineView0303 : View {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         //
+        val wid =
+            this.paddingStart + LINE_DOT_WID / 2 + lineRegionSize.width + LINE_DOT_WID / 2 + this.paddingEnd
+        val hei =
+            this.paddingTop + LINE_DOT_WID / 2 + lineRegionSize.height + LINE_DOT_WID / 2 + this.paddingBottom
+        setMeasuredDimension(wid, hei)
+
         refreshSize(measuredWidth.toFloat(), measuredHeight.toFloat())
         //
 //        lineLengthMin = (1.0F / 4 * min(measuredWidth, measuredHeight)).toInt()
@@ -204,10 +202,10 @@ class LineView0303 : View {
         super.onDraw(canvas)
         canvas.drawColor(Color.YELLOW)
 
-        paintTest.color = Color.CYAN
-        canvas.drawRect(touchRectLineStart, paintTest)
-        paintTest.color = Color.GRAY
-        canvas.drawRect(touchRectLineEnd, paintTest)
+//        paintTest.color = Color.CYAN
+//        canvas.drawRect(touchRectLineStart, paintTest)
+//        paintTest.color = Color.GRAY
+//        canvas.drawRect(touchRectLineEnd, paintTest)
 //        paintTest.color = Color.DKGRAY
 //        canvas.drawRect(touchRectLineCenter, paintTest)
         val wid = abs(lineDotStart.x - lineDotEnd.x)
@@ -241,36 +239,36 @@ class LineView0303 : View {
         )
 
         Log.e(TAG, "onDraw: lineDotStart.y=${lineDotStart.y}")
-        paintTest.color = Color.BLACK
-        canvas.drawLine(
-            0F,
-            lineDotStart.y - LINE_DOT_WID / 2,
-            this.width.toFloat(),
-            lineDotStart.y - LINE_DOT_WID / 2,
-            paintTest
-        )
-        canvas.drawLine(
-            0F,
-            lineDotStart.y + LINE_DOT_WID / 2,
-            this.width.toFloat(),
-            lineDotStart.y + LINE_DOT_WID / 2,
-            paintTest
-        )
-        paintTest.color = Color.CYAN
-        canvas.drawLine(
-            0F,
-            lineDotEnd.y - LINE_DOT_WID / 2,
-            this.width.toFloat(),
-            lineDotEnd.y - LINE_DOT_WID / 2,
-            paintTest
-        )
-        canvas.drawLine(
-            0F,
-            lineDotEnd.y + LINE_DOT_WID / 2,
-            this.width.toFloat(),
-            lineDotEnd.y + LINE_DOT_WID / 2,
-            paintTest
-        )
+//        paintTest.color = Color.BLACK
+//        canvas.drawLine(
+//            0F,
+//            lineDotStart.y - LINE_DOT_WID / 2,
+//            this.width.toFloat(),
+//            lineDotStart.y - LINE_DOT_WID / 2,
+//            paintTest
+//        )
+//        canvas.drawLine(
+//            0F,
+//            lineDotStart.y + LINE_DOT_WID / 2,
+//            this.width.toFloat(),
+//            lineDotStart.y + LINE_DOT_WID / 2,
+//            paintTest
+//        )
+//        paintTest.color = Color.CYAN
+//        canvas.drawLine(
+//            0F,
+//            lineDotEnd.y - LINE_DOT_WID / 2,
+//            this.width.toFloat(),
+//            lineDotEnd.y - LINE_DOT_WID / 2,
+//            paintTest
+//        )
+//        canvas.drawLine(
+//            0F,
+//            lineDotEnd.y + LINE_DOT_WID / 2,
+//            this.width.toFloat(),
+//            lineDotEnd.y + LINE_DOT_WID / 2,
+//            paintTest
+//        )
     }
 
     private var downPoint = Point()
@@ -362,21 +360,21 @@ class LineView0303 : View {
                         newViewRect.right = originViewRect.right + disX
                         newViewRect.bottom = originViewRect.bottom + disY
                         val parentView = this.parent as View
-                        if (newViewRect.left < 0) {
-                            newViewRect.left = 0
-                            newViewRect.right = this.width
+                        if (newViewRect.left < parentView.left - canOutWid) {
+                            newViewRect.left = parentView.left - canOutWid
+                            newViewRect.right = this.width - canOutWid
                         }
-                        if (newViewRect.top < 0) {
-                            newViewRect.top = 0
-                            newViewRect.bottom = this.height
+                        if (newViewRect.top < parentView.top - canOutHei) {
+                            newViewRect.top = parentView.top - canOutHei
+                            newViewRect.bottom = this.height - canOutHei
                         }
-                        if (newViewRect.right > parentView.width) {
-                            newViewRect.right = parentView.width
-                            newViewRect.left = parentView.width - this.width
+                        if (newViewRect.right > parentView.right + canOutWid) {
+                            newViewRect.right = parentView.right + canOutWid
+                            newViewRect.left = parentView.right + canOutWid - this.width
                         }
-                        if (newViewRect.bottom > parentView.height) {
-                            newViewRect.bottom = parentView.height
-                            newViewRect.top = parentView.height - this.height
+                        if (newViewRect.bottom > parentView.bottom + canOutHei) {
+                            newViewRect.bottom = parentView.bottom + canOutHei
+                            newViewRect.top = parentView.bottom + canOutHei - this.height
                         }
                     }
                     val mLayoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
@@ -627,17 +625,18 @@ class LineView0303 : View {
         val start = Point()
         val end = Point()
         if (leftTop_To_RightBottom) {
-            start.set(this.left, this.top)
-            end.set(this.right, this.bottom)
+            start.set(this.left + LINE_DOT_WID / 2, this.top + LINE_DOT_WID / 2)
+            end.set(this.right - LINE_DOT_WID / 2, this.bottom - LINE_DOT_WID / 2)
+            Log.e(TAG, "getStartEndPoints: $left $top $right $bottom")
         } else if (topRight_To_BottomLeft) {
-            start.set(this.right, this.top)
-            end.set(this.left, this.bottom)
+            start.set(this.right - LINE_DOT_WID / 2, this.top + LINE_DOT_WID / 2)
+            end.set(this.left + LINE_DOT_WID / 2, this.bottom - LINE_DOT_WID / 2)
         } else if (rightBottom_To_LeftTop) {
-            start.set(this.right, this.bottom)
-            end.set(this.left, this.top)
+            start.set(this.right - LINE_DOT_WID / 2, this.bottom - LINE_DOT_WID / 2)
+            end.set(this.left + LINE_DOT_WID / 2, this.top + LINE_DOT_WID / 2)
         } else if (bottomLeft_To_TopRight) {
-            start.set(this.left, this.bottom)
-            end.set(this.right, this.top)
+            start.set(this.left + LINE_DOT_WID / 2, this.bottom - LINE_DOT_WID / 2)
+            end.set(this.right - LINE_DOT_WID / 2, this.top + LINE_DOT_WID / 2)
         }
         return Pair(start, end)
     }
@@ -647,5 +646,14 @@ class LineView0303 : View {
 
     fun setOnMoveOrSizeChangeListener(listener: ((lineRegionRect: Rect, Pair<Point, Point>) -> Unit)? = null) {
         onMoveOrSizeChangeListener = listener
+    }
+
+    fun getLineDotWid(): Int {
+        return LINE_DOT_WID
+    }
+
+    private var lineRegionSize = Size(0, 0)
+    fun setLineRegionSize(lineRegionSize: Size) {
+        this.lineRegionSize = lineRegionSize
     }
 }

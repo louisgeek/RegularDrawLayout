@@ -11,11 +11,8 @@ import android.util.Size
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.louisgeek.as_2023_1_1.BoxView0301
-import com.louisgeek.as_2023_1_1.LineView0303
 import com.louisgeek.as_2023_1_1.R
 import kotlin.math.min
 
@@ -115,6 +112,8 @@ class GZLayout : FrameLayout {
         dotView.id = 12
         dotView.visibility = View.INVISIBLE
         val mlp = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//        marginLayoutParams.marginStart = dotPoint.x - bmpDotWid / 2
+//        marginLayoutParams.topMargin = dotPoint.y - dotView.height / 2
         this.addView(dotView, mlp)
         //
         dotViews[dotView.id] = dotView
@@ -185,17 +184,30 @@ class GZLayout : FrameLayout {
     }
 
     fun addLineView(lineDotStart: Point, lineDotEnd: Point, lineRegionSize: Size) {
-        val minX = min(lineDotStart.x, lineDotEnd.x)
-        val minY = min(lineDotStart.y, lineDotEnd.y)
+        val lineDotMinX = min(lineDotStart.x, lineDotEnd.x)
+        val lineDotMinY = min(lineDotStart.y, lineDotEnd.y)
         //
         val lineView = LineView0303(context)
         lineView.id = 1
-        val mlp = MarginLayoutParams(lineRegionSize.width, lineRegionSize.height)
-        mlp.marginStart = minX
-        mlp.topMargin = minY
+        lineView.visibility = View.INVISIBLE
+        val mlp = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//        mlp.marginStart = lineDotMinX
+//        mlp.topMargin = lineDotMinY
+
+        lineView.setLineRegionSize(lineRegionSize)
+
         this.addView(lineView, mlp)
         //
         lineViews[lineView.id] = lineView
+        //
+        lineView.post {
+            val lineDotWid = lineView.getLineDotWid()
+            val marginLayoutParams = lineView.layoutParams as MarginLayoutParams
+            marginLayoutParams.marginStart = lineDotMinX - lineDotWid / 2
+            marginLayoutParams.topMargin = lineDotMinY - lineDotWid / 2
+            lineView.layoutParams = marginLayoutParams
+            lineView.visibility = View.VISIBLE
+        }
         //
         val operateTextView = TextView(context)
         operateTextView.text = "编辑"
@@ -207,7 +219,6 @@ class GZLayout : FrameLayout {
             Toast.makeText(context, "点击编辑", Toast.LENGTH_SHORT).show()
         }
         val otv_mlp = MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-
 //        otv_mlp.marginStart = lineDotStart.x + lineRegionSize.width / 2
 //        otv_mlp.topMargin = lineDotStart.y -
         this.addView(operateTextView, otv_mlp)
@@ -351,17 +362,31 @@ class GZLayout : FrameLayout {
 
 
     fun addBoxView(boxDotStart: Point, boxDotEnd: Point, boxRegionSize: Size) {
-        val minX = min(boxDotStart.x, boxDotEnd.x)
-        val minY = min(boxDotStart.y, boxDotEnd.y)
+        val boxDotMinX = min(boxDotStart.x, boxDotEnd.x)
+        val boxDotMinY = min(boxDotStart.y, boxDotEnd.y)
         //
         val boxView = BoxView0301(context)
         boxView.id = 2
+        boxView.visibility = View.INVISIBLE
         val mlp = MarginLayoutParams(boxRegionSize.width, boxRegionSize.height)
-        mlp.marginStart = minX
-        mlp.topMargin = minY
+//        mlp.marginStart = boxDotMinX
+//        mlp.topMargin = boxDotMinY
+
+        boxView.setBoxRegionSize(boxRegionSize)
+
         this.addView(boxView, mlp)
         //
         boxViews[boxView.id] = boxView
+        //
+        //
+        boxView.post {
+            val lineDotWid = boxView.getBoxDotWid()
+            val marginLayoutParams = boxView.layoutParams as MarginLayoutParams
+            marginLayoutParams.marginStart = boxDotMinX - lineDotWid / 2
+            marginLayoutParams.topMargin = boxDotMinY - lineDotWid / 2
+            boxView.layoutParams = marginLayoutParams
+            boxView.visibility = View.VISIBLE
+        }
         //
         val operateTextView = TextView(context)
         operateTextView.text = "编辑"
@@ -451,14 +476,14 @@ class GZLayout : FrameLayout {
 //            operateTextView.bottom = otvBottom
     }
 
-    fun getDotList() {
+    fun getDotPointsList() {
         dotViews.forEach { vId, dotView ->
             val dotPoint = dotView.getDotPoint()
             Log.e("TAG", "dotPoint: $dotPoint")
         }
     }
 
-    fun getPoList() {
+    fun getLinePointsList() {
         lineViews.forEach { vId, lineView ->
             val startEndPoints = lineView.getStartEndPoints()
             Log.e("TAG", "startEndPoints: $startEndPoints")
