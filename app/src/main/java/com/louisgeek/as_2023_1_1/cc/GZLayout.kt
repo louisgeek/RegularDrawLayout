@@ -227,25 +227,22 @@ class GZLayout : FrameLayout {
 //        otv_mlp.topMargin = lineDotStart.y -
         this.addView(operateTextView, otv_mlp)
         //
-        lineView.setOnMoveOrSizeChangeListener { lineRegionRect, startEndPoints ->
-            Log.e("TAG", "addLineView: lineRegionRect=$lineRegionRect")
-            Log.e("TAG", "addLineView: startEndPoints=$startEndPoints")
+        lineView.setOnMoveOrSizeChangeListener { lineRegionRect, _ ->
             if (operateTextView.width == 0 && operateTextView.height == 0) {
                 lineView.post {
-                    layout_line_otv(operateTextView, lineView, lineRegionRect, startEndPoints)
+                    layout_line_otv(operateTextView, lineView, lineRegionRect)
                 }
             } else {
-                layout_line_otv(operateTextView, lineView, lineRegionRect, startEndPoints)
+                layout_line_otv(operateTextView, lineView, lineRegionRect)
             }
 
         }
     }
 
     private fun layout_line_otv(
-        operateTextView: TextView,
-        lineView: View,
-        lineRegionRect: Rect,
-        startEndPoints: Pair<Point, Point>
+        operateView: TextView,
+        lineView: LineView0303,
+        lineRegionRect: Rect
     ) {
         val lineParentView = lineView.parent as View
         val parentLeft = lineParentView.left
@@ -262,14 +259,16 @@ class GZLayout : FrameLayout {
         val lineRegionRight = lineRegionRect.right
         val lineRegionBottom = lineRegionRect.bottom
 
+        val lineDotWid = lineView.getLineDotWid()
+        val startEndPoints = lineView.getStartEndPoints()
         val startPoint = startEndPoints.first
         val endPoint = startEndPoints.second
-        Log.e(
-            "TAG",
-            "layout_line_otv: operateTextView.height=${operateTextView.height} operateTextView.width=${operateTextView.width}" +
-                    " parentLeft=$parentLeft parentTop=$parentTop  left=$lineRegionLeft top=$lineRegionTop" +
-                    " parentRight=$parentRight parentBottom=$parentBottom  right=$lineRegionRight bottom=$lineRegionBottom"
-        )
+//        Log.e(
+//            "TAG",
+//            "layout_line_otv: operateTextView.height=${operateTextView.height} operateTextView.width=${operateTextView.width}" +
+//                    " parentLeft=$parentLeft parentTop=$parentTop  left=$lineRegionLeft top=$lineRegionTop" +
+//                    " parentRight=$parentRight parentBottom=$parentBottom  right=$lineRegionRight bottom=$lineRegionBottom"
+//        )
 //            val mlp = operateTextView.layoutParams as MarginLayoutParams
 //            mlp.marginStart = lineDotStart.x + lineRegionWid / 2
 //            mlp.topMargin = lineDotStart.y + lineRegionHei
@@ -279,30 +278,39 @@ class GZLayout : FrameLayout {
         val centerNameRectHei = 50 + 5
         var otvLeft = 0
         var otvTop = 0
-        val startCh = startPoint.x >= operateTextView.left && startPoint.x <= operateTextView.right
-        val endCh = endPoint.x >= operateTextView.left && endPoint.x <= operateTextView.right
+        Log.e(
+            "TAG",
+            "layout_line_otv: left ${operateView.left}  ${operateView.top}  ${operateView.right}  ${operateView.bottom}",
+        )
+        Log.e("TAG", "layout_line_otv: startPoint ${startPoint}  ${endPoint}")
+        val startCh =
+            (startPoint.x >= operateView.left && startPoint.x <= operateView.right)
+                    && (startPoint.y >= operateView.top && startPoint.y <= operateView.bottom)
+        val endCh =
+            (endPoint.x >= operateView.left && endPoint.x <= operateView.right)
+                    && (endPoint.y >= operateView.top && endPoint.y <= operateView.bottom)
         Log.e("TAG", "layout_line_otv: startCh=$startCh endCh=$endCh")
         if (startCh || endCh) {
-            if (parentBottom - operateTextView.bottom > operateTextView.height) {
+            if (parentBottom - operateView.bottom > operateView.height) {
                 //显示在下方
-                otvLeft = lineRegionLeft + lineRegionWid / 2 - operateTextView.width / 2
+                otvLeft = lineRegionLeft + lineRegionWid / 2 - operateView.width / 2
                 otvTop = lineRegionTop + lineRegionHei / 2 + centerNameRectHei / 2
             } else {
                 //显示在上方
-                otvLeft = lineRegionLeft + lineRegionWid / 2 - operateTextView.width / 2
+                otvLeft = lineRegionLeft + lineRegionWid / 2 - operateView.width / 2
                 otvTop =
-                    lineRegionTop + lineRegionHei / 2 - centerNameRectHei / 2 - operateTextView.height
+                    lineRegionTop + lineRegionHei / 2 - centerNameRectHei / 2 - operateView.height
             }
         } else {
-            if (parentRight - operateTextView.right > operateTextView.width) {
+            if (parentRight - operateView.right > operateView.width) {
                 //显示在右方
                 otvLeft = lineRegionLeft + lineRegionWid / 2 + centerNameRectWid / 2
-                otvTop = lineRegionTop + lineRegionHei / 2 - operateTextView.height / 2
+                otvTop = lineRegionTop + lineRegionHei / 2 - operateView.height / 2
             } else {
                 //显示在左方
                 otvLeft =
-                    lineRegionLeft + lineRegionWid / 2 - centerNameRectWid / 2 - operateTextView.width
-                otvTop = lineRegionTop + lineRegionHei / 2 - operateTextView.height / 2
+                    lineRegionLeft + lineRegionWid / 2 - centerNameRectWid / 2 - operateView.width
+                otvTop = lineRegionTop + lineRegionHei / 2 - operateView.height / 2
             }
 
         }
@@ -347,10 +355,10 @@ class GZLayout : FrameLayout {
 //            val otvBottom = otvTop + operateTextView.height
 //            operateTextView.layout(otvLeft, otvTop, otvRight, otvBottom)
 //        }
-        val otvRight = otvLeft + operateTextView.width
-        val otvBottom = otvTop + operateTextView.height
-        operateTextView.layout(otvLeft, otvTop, otvRight, otvBottom)
-        operateTextView.visibility = View.VISIBLE
+        val otvRight = otvLeft + operateView.width
+        val otvBottom = otvTop + operateView.height
+        operateView.layout(otvLeft, otvTop, otvRight, otvBottom)
+        operateView.visibility = View.VISIBLE
 //            operateTextView.left = otvLeft
 //            operateTextView.top = otvTop
 //            operateTextView.right = otvRight
